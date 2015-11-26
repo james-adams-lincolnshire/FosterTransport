@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/golang/fosterTransport/pages"
 	"net/http"
 	"strings"
 )
@@ -9,6 +10,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", "GET")
 	w.Header().Add("Access-Control-Allow-Headers", "Accept, Content-Type")
 
+	routeByMethod(w, r)
+}
+
+func routeByMethod(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		routeGetByContentType(w, r)
@@ -28,7 +33,7 @@ func routeGetByContentType(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i <= len(requestedContentTypes); i++ {
 		if strings.Contains(requestedContentTypes, pageContentTypes[i]) {
-			getPage(w, r)
+			pages.Home(w, r)
 			return
 		}
 	}
@@ -45,14 +50,10 @@ func routePostByContentType(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i <= len(requestedContentTypes); i++ {
 		if strings.Contains(requestedContentTypes, pageContentTypes[i]) {
-			getPage(w, r)
+			pages.Home(w, r)
 			return
 		}
 	}
 
 	http.Error(w, "Media type not supported", http.StatusUnsupportedMediaType)
-}
-
-func getPage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello James"))
 }
